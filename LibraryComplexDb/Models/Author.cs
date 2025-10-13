@@ -1,9 +1,9 @@
-﻿namespace LibraryComplexApi.Models;
+﻿namespace LibraryComplexDb.Models;
 
-public class Genre
+public class Author
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string FullName { get; set; }
 
     public ICollection<Book> Books { get; set; } = new List<Book>();
 }

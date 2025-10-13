@@ -1,4 +1,4 @@
-namespace LibraryComplexApi.Models;
+namespace LibraryComplexDb.Models;
 
 public class Reader
 {

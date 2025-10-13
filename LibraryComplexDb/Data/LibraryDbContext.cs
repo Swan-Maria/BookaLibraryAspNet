@@ -1,7 +1,7 @@
-﻿using LibraryComplexApi.Models;
+﻿using LibraryComplexDb.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryComplexApi.Data;
+namespace LibraryComplexDb.Data;
 
 public class LibraryDbContext : DbContext
 {
@@ -11,10 +11,8 @@ public class LibraryDbContext : DbContext
     public DbSet<Author> Authors { get; set; }
     public DbSet<Genre> Genres { get; set; }
 
-    public LibraryDbContext(DbContextOptions<LibraryDbContext> options) 
-        : base(options)
-    {
-    }
+    public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
+        : base(options) { }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,7 +21,7 @@ public class LibraryDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-         // One-to-One
+        // One-to-One
         modelBuilder.Entity<Reader>()
             .HasOne(r => r.LibraryCard)
             .WithOne(c => c.Reader)

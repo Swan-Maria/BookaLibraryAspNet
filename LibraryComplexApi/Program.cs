@@ -1,15 +1,15 @@
-using LibraryComplexApi.Data;
-using LibraryComplexApi.Models;
-using LibraryComplexApi.Repositories;
-using LibraryComplexApi.Services;
+using LibraryComplexDb.Data;
+using LibraryComplexRepositories.Interfaces;
+using LibraryComplexRepositories.Implementations;
+using LibraryComplexServices.Interfaces;
+using LibraryComplexServices.Implementations;
 using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// PostgreSQL
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Generic dependency injection
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
@@ -28,4 +28,3 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
-
