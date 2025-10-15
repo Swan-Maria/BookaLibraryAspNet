@@ -1,4 +1,4 @@
-﻿using BooksLibraryAspNet.Domain.Data;
+﻿using BooksLibraryAspNet.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BooksLibraryAspNet.Domain.Repositories;

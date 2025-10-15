@@ -1,7 +1,6 @@
-﻿using BooksLibraryAspNet.Domain.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace BooksLibraryAspNet.Domain.Data;
+namespace BooksLibraryAspNet.Domain.Entities;
 
 public class LibraryDbContext : DbContext
 {

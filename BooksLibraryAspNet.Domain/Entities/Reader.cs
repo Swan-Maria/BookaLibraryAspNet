@@ -1,4 +1,4 @@
-namespace BooksLibraryAspNet.Domain.Models;
+namespace BooksLibraryAspNet.Domain.Entities;
 
 public class Reader
 {
