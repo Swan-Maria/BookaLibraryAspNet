@@ -1,4 +1,4 @@
-﻿namespace LibraryComplexServices.Service;
+﻿namespace BooksLibraryAspNet.Service.Services;
 
 public interface IService<T> where T : class
 {

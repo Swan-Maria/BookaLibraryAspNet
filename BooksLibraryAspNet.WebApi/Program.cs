@@ -1,42 +1,52 @@
 using BooksLibraryAspNet.Domain.Entities;
-using BooksLibraryAspNet.Domain.Repositories;
-using LibraryComplexServices.Service;
+using BooksLibraryAspNet.Domain;
+using BooksLibraryAspNet.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<LibraryDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<LibraryDbContext>();
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+});
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
-
+builder.Services.RegisterDomain();
+builder.Services.RegisterService();
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
     })
     .AddCookie(options =>
     {
-        options.LoginPath = "/Auth/Login";
-        options.LogoutPath = "/Auth/Logout";
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        };
     })
-    .AddGoogle(options =>
+    .AddGoogle(x =>
     {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-        options.CallbackPath = "/signin-google";
-        options.SaveTokens = true;
-    });
+        x.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+        x.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+        x.CallbackPath = "/signin-google";
+        x.SaveTokens = true;
+        x.Events = new()
+        {
+            OnTicketReceived = t =>
+            {
+                t.Principal?.AddIdentity(new([new("MyClaim", "MyValue")]));
 
-builder.Services.AddAuthorization();
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 
@@ -46,11 +56,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpLogging();
 app.UseHttpsRedirection();
-app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

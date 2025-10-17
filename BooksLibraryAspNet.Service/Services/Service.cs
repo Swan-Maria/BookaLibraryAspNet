@@ -1,6 +1,6 @@
 ﻿using BooksLibraryAspNet.Domain.Repositories;
 
-namespace LibraryComplexServices.Service;
+namespace BooksLibraryAspNet.Service.Services;
 
 internal class Service<T> : IService<T> where T : class
 {
